@@ -14,13 +14,14 @@ int isNegative(int number);
 
 int main(){
     int number =-70;
+    int flag = isNegative(number);
     number = abs(number);
     int numberSums=0;
     int *ptrNumberSums = &numberSums;
     int itemsArray = numberItemsArray(number);
     int *array =(int*)malloc(itemsArray * sizeof(int*));
     golbach(number,array,ptrNumberSums);
-    if(isNegative(number) == 1){
+    if(flag == 1){
         printGolbach1(array,numberSums,number,itemsArray);    
 	}else{
         printGolbach2(numberSums,number);
@@ -38,12 +39,8 @@ void printGolbach2(int numberSums,int number){
 }
 void printGolbach1(int *array,int numberSums,int number,int itemsArray){
     printf("%d: %d summs: ",number,numberSums);
-    for(int i=0;i<=itemsArray;i+=2){
-        if(i<itemsArray-1){
-            printf("%d + %d,",array[i],array[i+1]);
-        }else{
-            printf("%d + %d",array[i],array[i+1]);
-        }
+    for(int i=0;i<itemsArray*2;i+=2){
+		printf("%d + %d,",array[i],array[i+1]);
     }
     printf("\n");
 }
@@ -76,7 +73,7 @@ int isPrime(int number){
 	return 1;
 }
 int numberItemsArray(int n){
-    int items = 1;
+    int items = 0;
     for(int i=2;i<=n/2;i++){
 		if(isPrime(i)==1 && isPrime(n-i)==1){
 			items++;
