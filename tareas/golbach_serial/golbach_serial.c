@@ -1,29 +1,77 @@
+// A simple C program for traversal of a linked list
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-int isPrime(int number);
-/*
- * This method calculates the serial golbach sums in 
- * even numbers
- */
-void golbach(int number,int *numberSums,int itemsArray,int flag);
-int numberItemsArray(int n);
-void printGolbach1(int *array,int *numberSums,int number);
-void printGolbach2(int *array,int *numberSums,int number);
-int isNegative(int number);
-int prime_finder(int target, int *prime_list);
 
-int main(){
-	for(int i=0;i<10;i++){
-		int number = 21;
-        scanf("%d",&number);
-        int flag = isNegative(number);
-        number = abs(number);
-        int numberSums=0;
-        int *ptrNumberSums = &numberSums;
-        int itemsArray = numberItemsArray(number);
-        golbach(number,ptrNumberSums,itemsArray,flag);
-    }  
+struct Node {
+    int data;
+    struct Node* next;
+};
+/* Given a reference (pointer to pointer) to the head
+   of a list and an int, appends a new node at the end  */
+void append(struct Node** head_ref, int new_data)
+{
+    /* 1. allocate node */
+    struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+  
+    struct Node *last = *head_ref;  /* used in step 5*/
+  
+    /* 2. put in the data  */
+    new_node->data  = new_data;
+  
+    /* 3. This new node is going to be the last node, so make next of
+          it as NULL*/
+    new_node->next = NULL;
+  
+    /* 4. If the Linked List is empty, then make the new node as head */
+    if (*head_ref == NULL)
+    {
+       *head_ref = new_node;
+       return;
+    }
+  
+    /* 5. Else traverse till the last node */
+    while (last->next != NULL)
+        last = last->next;
+  
+    /* 6. Change the next of last node */
+    last->next = new_node;
+    return;
+}
+int isPrime(int number);
+
+void golbach(int number,struct Node *node,int *numberSums,int flag);
+
+void printGolbach1(struct Node *node,int *numberSums,int number,int flag);
+
+void printGolbach2(int *array,int *numberSums,int number);
+
+int isNegative(int number);
+
+int prime_finder(int target, int *prime_list); 
+
+  
+// This function prints contents of linked list starting from
+// the given node
+void printList(struct Node* n)
+{
+    while (n != NULL) {
+        printf(" %d ", n->data);
+        n = n->next;
+    }
+}
+  
+int main()
+{
+    struct Node* head = NULL;
+    int number = 21;
+    scanf("%d",&number);
+    int flag = isNegative(number);
+    number = abs(number);
+    int numberSums=0;
+    int *ptrNumberSums = &numberSums;
+    golbach(number,head,ptrNumberSums,flag);
+
     return 0;
 }
 int isNegative(int number){
@@ -39,76 +87,40 @@ void printGolbach2(int *array,int *numberSums,int number){
     }
     printf("\n");
 }
-void printGolbach1(int *array,int *numberSums,int number){
-    printf("%d: %d summs: ",number,*numberSums);
-    for(int i=0;i<*(numberSums)*2;i+=2){
-		printf("%d + %d, ",array[i],array[i+1]);
+void printGolbach1(struct Node *node,int *numberSums,int number,int flag){
+    if(flag==1){
+        printf("%d: %d summs: ",number,*numberSums);
+        for(int i=0;i<=*(numberSums)*2;i+=2){
+            while (node != NULL) {
+                printf("%d + ", node->data);
+                node = node->next;
+                printf("%d,", node->data);
+                node = node->next;
+            }
+        }
+    }else{
+        printf("%d: %d summs",number,*numberSums);
     }
     printf("\n");
 }
-int prime_finder(int target, int *prime_list){
-    *prime_list = 2;
-    int i = 1;
-    int check = 3;
-    while(1){
-        for (int j = 0; j < i; j++){
-            if (!(check % *(prime_list + j))){
-                break;
-            }
-            else if (j == i - 1){
-                *(prime_list + i) = check;
-                i++;
-            }
-        }
-        if (check == target - 4){
-            break;
-        }
-        check++;
-    }
-    return i;
-}
-void golbach(int number,int *numberSums,int itemsArray,int flag){
-    int arrayAux = 0;
+
+void golbach(int number,struct Node *head,int *numberSums,int flag){
 	int typeGolbach = number%2;
 	if(typeGolbach == 0){
-		int *array =(int*)malloc(itemsArray * sizeof(int*));
 		//This cicle is for finding the sums of prime numbers
 		//Is divided by 2 because beyond that it will repeat the sums in
 		//the opposite order
 		for(int i=2;i<=number/2;i++){
 			if(isPrime(i)==1 && isPrime(number-i)==1){
-				array[arrayAux] = i;
-				array[arrayAux+1] = number-i;
-				arrayAux+=2;
+			    append(&head,i);
+				append(&head,number-i);
 				*numberSums+=1;
 			}
 		}
-		printGolbach1(array,numberSums,number);
-		free(array);
+		printGolbach1(head, numberSums, number,flag);
 	}else{
-
-		int *prime_list = malloc(sizeof(int) * number/2);
-		int *arrayPairs = malloc(sizeof(int) * number);
-		int num_primes = prime_finder(number, prime_list);
-		for (int i = 0; i < num_primes; i++){
-			for (int j = i; j < num_primes; j++){
-				for (int k = j; k < num_primes; k++){
-					if (*(prime_list + i) + *(prime_list + j) + *(prime_list + k) == number){
-						arrayPairs[arrayAux] =*(prime_list + i);
-						arrayPairs[arrayAux+1] =*(prime_list + j);
-						arrayPairs[arrayAux+2] =*(prime_list + k);
-						arrayAux += 3;
-						*numberSums+=1;
-						//printf("%d = %d + %d + %d\n", number, *(prime_list + i), *(prime_list + j), *(prime_list + k));
-					}
-				}
-			}
-		}
-			printGolbach2(arrayPairs,numberSums,number);
-			free(prime_list);
-			free(arrayPairs);
-		
-	}
+            
+    }
 }
 int isPrime(int number){
 	if(number > 0){
@@ -120,13 +132,4 @@ int isPrime(int number){
 		}
 	}
 	return 1;
-}
-int numberItemsArray(int n){
-    int items = 0;
-    for(int i=2;i<=n/2;i++){
-		if(isPrime(i)==1 && isPrime(n-i)==1){
-			items++;
-		}	
-	}
-	return items;
 }
