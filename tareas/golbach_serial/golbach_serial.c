@@ -13,7 +13,6 @@ void append(struct Node** head_ref, int new_data)
 {
     /* 1. allocate node */
     struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
-  
     struct Node *last = *head_ref;  /* used in step 5*/
   
     /* 2. put in the data  */
@@ -44,12 +43,12 @@ void golbach(int number,struct Node *node,int *numberSums,int flag);
 
 void printGolbach1(struct Node *node,int *numberSums,int number,int flag);
 
-void printGolbach2(int *array,int *numberSums,int number);
-
+void printGolbach2(struct Node *node,int *numberSums,int number,int flag);
 int isNegative(int number);
 
 int prime_finder(int target, int *prime_list); 
 
+void freeList(struct Node *node);
   
 // This function prints contents of linked list starting from
 // the given node
@@ -64,15 +63,25 @@ void printList(struct Node* n)
 int main()
 {
     struct Node* head = NULL;
-    int number = 21;
+    int number = 0;
+    while(1){
     scanf("%d",&number);
     int flag = isNegative(number);
     number = abs(number);
     int numberSums=0;
     int *ptrNumberSums = &numberSums;
     golbach(number,head,ptrNumberSums,flag);
-
+    }
     return 0;
+}
+void freeList(struct Node* head){
+   struct Node* aux;
+   while (head != NULL){
+       aux = head;
+       head = head->next;
+       free(aux);
+    }
+
 }
 int isNegative(int number){
     if(number<0){
@@ -80,10 +89,21 @@ int isNegative(int number){
     }
     return 0;
 }
-void printGolbach2(int *array,int *numberSums,int number){
-    printf("%d: %d summs: ",number,*numberSums);
-    for(int i=0;i<*(numberSums)*3;i+=3){
-		printf("%d + %d + %d,",array[i],array[i+1],array[i+2]);
+void printGolbach2(struct Node *node,int *numberSums,int number,int flag){
+    if(flag==1){
+        printf("%d: %d summs: ",number,*numberSums);
+        for(int i=0;i<=*(numberSums)*2;i+=2){
+            while (node != NULL) {
+                printf("%d + ", node->data);
+                node = node->next;
+                printf(" %d + ", node->data);
+                node = node->next;
+                printf("%d , ", node->data);
+                node = node->next;
+            }
+        }
+    }else{
+        printf("%d: %d summs",number,*numberSums);
     }
     printf("\n");
 }
@@ -118,9 +138,36 @@ void golbach(int number,struct Node *head,int *numberSums,int flag){
 			}
 		}
 		printGolbach1(head, numberSums, number,flag);
+		freeList(head);
 	}else{
-            
+	    int  flagWeak, count=0, *primes;
+        primes = (int *) malloc (sizeof(int)*number/2);
+        for(int i = 2; i < number; ++i) {
+            flagWeak = isPrime(i);
+            if(flagWeak == 1){
+                primes[count] = i;
+                count = count+1;
+            }
+        }
+        for (int i = 0; i < count; i++){
+            for (int j = i; j < count; j++){
+                for (int k = j; k < count; k++){
+                    if (primes[i] + primes[j] + primes[k] == number){
+                        append(&head,primes[i]);
+				        append(&head,primes[j]);
+				        append(&head,primes[k]);
+				        *numberSums+=1;
+                    }
+                }
+            }
+        }
+        printGolbach2(head, numberSums, number,flag);
+		freeList(head);
+		free(primes);
     }
+	    
+	
+	    
 }
 int isPrime(int number){
 	if(number > 0){
