@@ -1,30 +1,67 @@
-// A simple C program for traversal of a linked list
+
+// Code of the simple linked list adapted from https://www.geeksforgeeks.org/linked-list-set-2-inserting-a-node/
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <inttypes.h>
+/** @struct Node
+ *  @brief This structure is for a node, used later to build a linked list
+ */
 struct Node {
     int32_t data;
     struct Node* next;
 };
-void append(struct Node** head_ref, int new_data);
-
+/**
+ * @brief Adds a node at the end of the list
+ * @param head_ref Reference to the head of the list
+ * @param new_data The new data to be added
+ */
+void append(struct Node** head_ref, int32_t new_data);
+/**
+ * @brief Free the memory that is used for the list
+ * @param node Head of the list to free the memory
+ */
 void freeList(struct Node *node);
-
+/**
+ * @brief Prints a simple linked list
+ * @param n the node to start printing
+ */
 void printList(struct Node* n);
-
+/**
+ * @brief Makes sure a number is prime
+ * @param number The number to be checked
+ * @return 1 if is prime, 0 if it isnt
+ */
 int isPrime(int32_t number);
-
+/**
+ * @brief Does the golbach procedure for weak and strong conjectures
+ * @param number The number to find the sums
+ * @param node Node to create a simple linked list with the sums
+ * @param numberSums Stores how many sums are made in the process
+ */
 void golbach(int32_t number, struct Node *node, int32_t *numberSums);
-
+/**
+ * @brief Prints the golbach sums of the strong conjecture
+ * @param node Node to create a simple linked list with the sums
+ * @param numberSums has the number of sums made in golbach
+ * @param number The number that was used to find the sums
+ * @param flag store if a number is negative
+ */
 void printGolbachStrong(struct Node *node, int32_t *numberSums, int32_t number, int32_t flag);
-
+/**
+ * @brief Prints the golbach sums of the weak conjecture
+ * @param node Node to create a simple linked list with the sums
+ * @param numberSums has the number of sums made in golbach
+ * @param number The number that was used to find the sums
+ * @param flag store if a number is negative
+ */
 void printGolbachWeak(struct Node *node, int32_t *numberSums, int32_t number, int32_t flag);
-
+/**
+ * @brief Checks if a number is negative
+ * @param number The number to be checked
+ * @return 1 if the number is negative and 0 if not
+ */
 int32_t isNegative(int32_t number);
-
-int32_t prime_finder(int32_t target, int32_t *prime_list);
-
 
 int main() {
     struct Node* head = NULL;
@@ -121,6 +158,7 @@ void golbach(int32_t number,struct Node *head,int32_t *numberSums){
 		freeList(head);
 	}else{
 	    int32_t  flagWeak, count=0, *primes;
+	    //Here a list of prime numbers before the number for golbach is created
         primes = (int32_t *) malloc (sizeof(int32_t)*numberCopy/2);
         for(int32_t i = 2; i < numberCopy; ++i) {
             flagWeak = isPrime(i);
@@ -129,10 +167,12 @@ void golbach(int32_t number,struct Node *head,int32_t *numberSums){
                 count = count+1;
             }
         }
+        //Does 3 cicles to check if the sums of them are equal to the number
         for (int32_t i = 0; i < count; i++){
             for (int32_t j = i; j < count; j++){
                 for (int32_t k = j; k < count; k++){
                     if (primes[i] + primes[j] + primes[k] == numberCopy){
+                        //Appends the primes to the list to be printed later
                         append(&head,primes[i]);
 				        append(&head,primes[j]);
 				        append(&head,primes[k]);
@@ -158,7 +198,7 @@ int32_t isPrime(int32_t number){
 	}
 	return 1;
 }
-void append(struct Node** head_ref, int new_data){
+void append(struct Node** head_ref, int32_t new_data){
     struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
     struct Node *last = *head_ref;  
     new_node->data  = new_data;
