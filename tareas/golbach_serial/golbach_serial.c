@@ -15,26 +15,29 @@ void printList(struct Node* n);
 
 int isPrime(int32_t number);
 
-void golbach(int32_t number,struct Node *node,int32_t *numberSums);
+void golbach(int32_t number, struct Node *node, int32_t *numberSums);
 
-void printGolbach1(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag);
+void printGolbachStrong(struct Node *node, int32_t *numberSums, int32_t number, int32_t flag);
 
-void printGolbach2(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag);
+void printGolbachWeak(struct Node *node, int32_t *numberSums, int32_t number, int32_t flag);
 
 int32_t isNegative(int32_t number);
 
-int32_t prime_finder(int32_t target, int32_t *prime_list); 
+int32_t prime_finder(int32_t target, int32_t *prime_list);
 
-  
-int main(){
+
+int main() {
     struct Node* head = NULL;
     FILE* input = stdin;
-    FILE* output = stdout;
     int32_t number = 0;
-	while(fscanf(input,"%" SCNu32,&number)==1){
-		int32_t numberSums=0;
-		int32_t *ptrNumberSums = &numberSums;
-		golbach(number,head,ptrNumberSums);
+	while(fscanf(input, "%" SCNu32, &number) == 1) {
+		if(number <= 5 && number >= -5){
+			printf("%" PRId32 ": NA\n",number);
+		}else {
+			int32_t numberSums=0;
+			int32_t *ptrNumberSums = &numberSums;
+			golbach(number,head,ptrNumberSums);
+		}
 	}
     return 0;
 }
@@ -53,33 +56,44 @@ int32_t isNegative(int32_t number){
     }
     return 0;
 }
-void printGolbach2(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag){
+void printGolbachWeak(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag){
     if(flag==1){
 		printf("%" PRId32 ": %" PRIu32 " summs: ",number,*numberSums);
-        for(int32_t i=0;i<=*(numberSums)*2;i+=2){
+        for(int32_t i=0;i<(*(numberSums)*2);i+=2){
             while (node != NULL) {
                 printf("%" PRIu32 " + ",node->data);
                 node = node->next;
-                printf(" %" PRIu32 " + ",node->data);
+                printf("%" PRIu32 " + ",node->data);
                 node = node->next;
-                printf("%" PRIu32 " , ",node->data);
-                node = node->next;
+                if(node->next != NULL){
+					printf("%" PRIu32 " , ",node->data);
+					node = node->next;
+				}else{
+					printf("%" PRIu32 ,node->data);
+					node = node->next;
+				}
             }
+            
         }
     }else{
 		printf("%" PRId32 ": %" PRIu32 " summs",number,*numberSums);
     }
     printf("\n");
 }
-void printGolbach1(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag){
+void printGolbachStrong(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag){
     if(flag==1){
 		printf("%" PRId32 ": %" PRIu32 " summs: ",number,*numberSums);
-        for(int32_t i=0;i<=*(numberSums)*2;i+=2){
+        for(int32_t i=0;i<*(numberSums)*2;i+=2){
             while (node != NULL) {
                 printf("%" PRIu32 " + ",node->data);
                 node = node->next;
-                printf("%" PRIu32 " , ",node->data);
-                node = node->next;
+                if(node->next != NULL){
+					printf("%" PRIu32 " , ",node->data);
+					node = node->next;
+				}else{
+					printf("%" PRIu32 ,node->data);
+					node = node->next;
+				}
             }
         }
     }else{
@@ -103,7 +117,7 @@ void golbach(int32_t number,struct Node *head,int32_t *numberSums){
 				*numberSums+=1;
 			}
 		}
-		printGolbach1(head, numberSums, number,flag);
+		printGolbachStrong(head, numberSums, number,flag);
 		freeList(head);
 	}else{
 	    int32_t  flagWeak, count=0, *primes;
@@ -127,7 +141,7 @@ void golbach(int32_t number,struct Node *head,int32_t *numberSums){
                 }
             }
         }
-        printGolbach2(head, numberSums, number,flag);
+        printGolbachWeak(head, numberSums, number,flag);
 		freeList(head);
 		free(primes);
     }	    
