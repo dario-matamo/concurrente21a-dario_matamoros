@@ -2,76 +2,40 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
+#include <inttypes.h>
 struct Node {
-    int data;
+    int32_t data;
     struct Node* next;
 };
-/* Given a reference (pointer to pointer) to the head
-   of a list and an int, appends a new node at the end  */
-void append(struct Node** head_ref, int new_data)
-{
-    /* 1. allocate node */
-    struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
-    struct Node *last = *head_ref;  /* used in step 5*/
-  
-    /* 2. put in the data  */
-    new_node->data  = new_data;
-  
-    /* 3. This new node is going to be the last node, so make next of
-          it as NULL*/
-    new_node->next = NULL;
-  
-    /* 4. If the Linked List is empty, then make the new node as head */
-    if (*head_ref == NULL)
-    {
-       *head_ref = new_node;
-       return;
-    }
-  
-    /* 5. Else traverse till the last node */
-    while (last->next != NULL)
-        last = last->next;
-  
-    /* 6. Change the next of last node */
-    last->next = new_node;
-    return;
-}
-int isPrime(int number);
-
-void golbach(int number,struct Node *node,int *numberSums,int flag);
-
-void printGolbach1(struct Node *node,int *numberSums,int number,int flag);
-
-void printGolbach2(struct Node *node,int *numberSums,int number,int flag);
-int isNegative(int number);
-
-int prime_finder(int target, int *prime_list); 
+void append(struct Node** head_ref, int new_data);
 
 void freeList(struct Node *node);
+
+void printList(struct Node* n);
+
+int isPrime(int32_t number);
+
+void golbach(int32_t number,struct Node *node,int32_t *numberSums);
+
+void printGolbach1(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag);
+
+void printGolbach2(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag);
+
+int32_t isNegative(int32_t number);
+
+int32_t prime_finder(int32_t target, int32_t *prime_list); 
+
   
-// This function prints contents of linked list starting from
-// the given node
-void printList(struct Node* n)
-{
-    while (n != NULL) {
-        printf(" %d ", n->data);
-        n = n->next;
-    }
-}
-  
-int main()
-{
+int main(){
     struct Node* head = NULL;
-    int number = 0;
-    while(1){
-    scanf("%d",&number);
-    int flag = isNegative(number);
-    number = abs(number);
-    int numberSums=0;
-    int *ptrNumberSums = &numberSums;
-    golbach(number,head,ptrNumberSums,flag);
-    }
+    FILE* input = stdin;
+    FILE* output = stdout;
+    int32_t number = 0;
+	while(fscanf(input,"%" SCNu32,&number)==1){
+		int32_t numberSums=0;
+		int32_t *ptrNumberSums = &numberSums;
+		golbach(number,head,ptrNumberSums);
+	}
     return 0;
 }
 void freeList(struct Node* head){
@@ -83,76 +47,78 @@ void freeList(struct Node* head){
     }
 
 }
-int isNegative(int number){
+int32_t isNegative(int32_t number){
     if(number<0){
         return 1;
     }
     return 0;
 }
-void printGolbach2(struct Node *node,int *numberSums,int number,int flag){
+void printGolbach2(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag){
     if(flag==1){
-        printf("%d: %d summs: ",number,*numberSums);
-        for(int i=0;i<=*(numberSums)*2;i+=2){
+		printf("%" PRId32 ": %" PRIu32 " summs: ",number,*numberSums);
+        for(int32_t i=0;i<=*(numberSums)*2;i+=2){
             while (node != NULL) {
-                printf("%d + ", node->data);
+                printf("%" PRIu32 " + ",node->data);
                 node = node->next;
-                printf(" %d + ", node->data);
+                printf(" %" PRIu32 " + ",node->data);
                 node = node->next;
-                printf("%d , ", node->data);
+                printf("%" PRIu32 " , ",node->data);
                 node = node->next;
             }
         }
     }else{
-        printf("%d: %d summs",number,*numberSums);
+		printf("%" PRId32 ": %" PRIu32 " summs",number,*numberSums);
     }
     printf("\n");
 }
-void printGolbach1(struct Node *node,int *numberSums,int number,int flag){
+void printGolbach1(struct Node *node,int32_t *numberSums,int32_t number,int32_t flag){
     if(flag==1){
-        printf("%d: %d summs: ",number,*numberSums);
-        for(int i=0;i<=*(numberSums)*2;i+=2){
+		printf("%" PRId32 ": %" PRIu32 " summs: ",number,*numberSums);
+        for(int32_t i=0;i<=*(numberSums)*2;i+=2){
             while (node != NULL) {
-                printf("%d + ", node->data);
+                printf("%" PRIu32 " + ",node->data);
                 node = node->next;
-                printf("%d,", node->data);
+                printf("%" PRIu32 " , ",node->data);
                 node = node->next;
             }
         }
     }else{
-        printf("%d: %d summs",number,*numberSums);
+		printf("%" PRId32 ": %" PRIu32 " summs",number,*numberSums);
     }
     printf("\n");
 }
 
-void golbach(int number,struct Node *head,int *numberSums,int flag){
+void golbach(int32_t number,struct Node *head,int32_t *numberSums){
+	int32_t numberCopy = abs(number);
 	int typeGolbach = number%2;
+	int32_t flag = isNegative(number);
 	if(typeGolbach == 0){
 		//This cicle is for finding the sums of prime numbers
 		//Is divided by 2 because beyond that it will repeat the sums in
 		//the opposite order
-		for(int i=2;i<=number/2;i++){
-			if(isPrime(i)==1 && isPrime(number-i)==1){
+		for(int32_t i=2;i<=numberCopy/2;i++){
+			if(isPrime(i)==1 && isPrime(numberCopy-i)==1){
 			    append(&head,i);
-				append(&head,number-i);
+				append(&head,numberCopy-i);
 				*numberSums+=1;
 			}
 		}
 		printGolbach1(head, numberSums, number,flag);
 		freeList(head);
 	}else{
-	    int  flagWeak, count=0, *primes;
-        primes = (int *) malloc (sizeof(int)*number/2);
-        for(int i = 2; i < number; ++i) {
+	    int32_t  flagWeak, count=0, *primes;
+        primes = (int32_t *) malloc (sizeof(int32_t)*numberCopy/2);
+        for(int32_t i = 2; i < numberCopy; ++i) {
             flagWeak = isPrime(i);
             if(flagWeak == 1){
                 primes[count] = i;
                 count = count+1;
             }
         }
-        for (int i = 0; i < count; i++){
-            for (int j = i; j < count; j++){
-                for (int k = j; k < count; k++){
-                    if (primes[i] + primes[j] + primes[k] == number){
+        for (int32_t i = 0; i < count; i++){
+            for (int32_t j = i; j < count; j++){
+                for (int32_t k = j; k < count; k++){
+                    if (primes[i] + primes[j] + primes[k] == numberCopy){
                         append(&head,primes[i]);
 				        append(&head,primes[j]);
 				        append(&head,primes[k]);
@@ -164,19 +130,39 @@ void golbach(int number,struct Node *head,int *numberSums,int flag){
         printGolbach2(head, numberSums, number,flag);
 		freeList(head);
 		free(primes);
-    }
-	    
-	
-	    
+    }	    
 }
-int isPrime(int number){
+
+int32_t isPrime(int32_t number){
 	if(number > 0){
-		int sqrRootNumber = sqrt(number);
-		for(int i=2; i<=sqrRootNumber;i++){
+		int32_t sqrRootNumber = sqrt(number);
+		for(int32_t i=2; i<=sqrRootNumber;i++){
 			if(number % i == 0){
 				return 0;
 			}
 		}
 	}
 	return 1;
+}
+void append(struct Node** head_ref, int new_data){
+    struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+    struct Node *last = *head_ref;  
+    new_node->data  = new_data;
+    new_node->next = NULL;
+    if (*head_ref == NULL){
+       *head_ref = new_node;
+       return;
+    }
+    while (last->next != NULL){
+        last = last->next;
+	}
+    last->next = new_node;
+    return;
+}
+void printList(struct Node* n){
+    while (n != NULL) {
+		printf("%" PRIu32 ,n->data);
+       
+        n = n->next;
+    }
 }
