@@ -1,6 +1,6 @@
 all: golbach golbach_asan golbach_msan memcheck helgrind
 
-globach: golbach_serial.c
+golbach: golbach_serial.c
 	cc -g -Wall -Wextra golbach_serial.c -o golbach -lm
 
 golbach_asan:
@@ -10,7 +10,7 @@ golbach_msan:
 	clang -g -Wall -Wextra -fsanitize=address golbach_serial.c -o golbach_msan -lm
 
 .PHONY: rebuild
-rebuild: clean golbach
+rebuild: clean golbach golbach_asan golbach_msan
 
 .PHONY:memcheck
 memcheck:
@@ -19,7 +19,11 @@ memcheck:
 .PHONY: helgrind
 helgrind:
 	valgrind --quiet --tool=helgrind ./golbach
-	
+
+.PHONY: lint
+lint:
+	cpplint --filter=-[readability/casting] golbach_serial.c
+
 .PHONY: clean
 clean:
 	rm -rf golbach

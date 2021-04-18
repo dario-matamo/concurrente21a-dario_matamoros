@@ -2,3 +2,5 @@ golbach
 tests
 html
 latex
+golbach_asan
+golbach_msan
