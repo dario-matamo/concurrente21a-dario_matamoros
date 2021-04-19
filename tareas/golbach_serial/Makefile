@@ -30,4 +30,4 @@ gitignore:
 
 .PHONY: clean
 clean:
-	rm -rf golbach
+	rm -rf golbach golbach_asan golbach_msan
