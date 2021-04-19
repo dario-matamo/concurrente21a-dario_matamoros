@@ -7,14 +7,14 @@ golbach_asan:
 	clang -g -Wall -Wextra -fsanitize=address golbach_serial.c -o golbach_asan -lm
 
 golbach_msan:
-	clang -g -Wall -Wextra -fsanitize=address golbach_serial.c -o golbach_msan -lm
+	clang -g -Wall -Wextra -fsanitize=memory golbach_serial.c -o golbach_msan -lm
 
 .PHONY: rebuild
 rebuild: clean golbach golbach_asan golbach_msan
 
 .PHONY:memcheck
 memcheck:
-	valgrind --quiet --tool=memcheck ./golbach
+	valgrind --tool=memcheck ./golbach
 	
 .PHONY: helgrind
 helgrind:
@@ -23,6 +23,10 @@ helgrind:
 .PHONY: lint
 lint:
 	cpplint --filter=-[readability/casting] golbach_serial.c
+
+.PHONY: gitignore
+gitignore:
+	echo golbach golbach_asan golbach_msan memcheck helgrind | tr " " "\n" > .gitignore
 
 .PHONY: clean
 clean:
