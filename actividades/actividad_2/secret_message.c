@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     struct timespec finish_time;
     clock_gettime(/*clk_id*/ CLOCK_MONOTONIC, &finish_time);
 
-        for(int i=0 ; i < shared_data.thread_count ; i++){
+        for(size_t i=0 ; i < shared_data.thread_count ; i++){
         printf("%c,",shared_data.message[i]);
     }
 

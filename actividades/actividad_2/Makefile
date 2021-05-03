@@ -1,4 +1,4 @@
-APPNAME=hello_iw_shr
+APPNAME=secret_message
 EXECUTABLES=$(APPNAME) $(APPNAME)_asan $(APPNAME)_msan $(APPNAME)_tsan $(APPNAME)_ubsan
 
 CC=cc
