@@ -7,6 +7,7 @@
 /** @struct Node
  *  @brief This structure is for a node, used later to build a linked list
  */
+ // Struct of the simple linked list
 struct Node {
     int32_t data;
     struct Node* next;
@@ -16,16 +17,19 @@ struct Node {
  * @param head_ref Reference to the head of the list
  * @param new_data The new data to be added
  */
+ // Method of the simple linked list
 void append(struct Node** head_ref, int32_t new_data);
 /**
  * @brief Free the memory that is used for the list
  * @param node Head of the list to free the memory
  */
+ // Method of the simple linked list
 void freeList(struct Node *node);
 /**
  * @brief Prints a simple linked list
  * @param n the node to start printing
  */
+ // Method of the simple linked list
 void printList(struct Node* n);
 /**
  * @brief Makes sure a number is prime
@@ -94,7 +98,7 @@ int32_t isNegative(int32_t number) {
 }
 void printGolbachWeak(struct Node *node, int32_t *numberSums, int32_t number, int32_t flag) {
     if (flag == 1) {
-        printf("%" PRId32 ": %" PRIu32 " summs: ", number, *numberSums);
+        printf("%" PRId32 ": %" PRIu32 " sums: ", number, *numberSums);
         for (int32_t i=0; i < (*(numberSums)*2); i+=2) {
             while (node != NULL) {
                 printf("%" PRIu32 " + ", node->data);
@@ -102,7 +106,7 @@ void printGolbachWeak(struct Node *node, int32_t *numberSums, int32_t number, in
                 printf("%" PRIu32 " + ", node->data);
                 node = node->next;
                 if (node->next != NULL) {
-                    printf("%" PRIu32 " , ", node->data);
+                    printf("%" PRIu32 ", ", node->data);
                     node = node->next;
                 } else {
                     printf("%" PRIu32 , node->data);
@@ -111,19 +115,19 @@ void printGolbachWeak(struct Node *node, int32_t *numberSums, int32_t number, in
             }
         }
     } else {
-        printf("%" PRId32 ": %" PRIu32 " summs", number, *numberSums);
+        printf("%" PRId32 ": %" PRIu32 " sums", number, *numberSums);
     }
     printf("\n");
 }
 void printGolbachStrong(struct Node *node, int32_t *numberSums, int32_t number, int32_t flag) {
      if (flag == 1) {
-        printf("%" PRId32 ": %" PRIu32 " summs: ", number, *numberSums);
+        printf("%" PRId32 ": %" PRIu32 " sums: ", number, *numberSums);
         for (int32_t i=0; i < *(numberSums)*2; i+=2) {
             while (node != NULL) {
                 printf("%" PRIu32 " + ", node->data);
                 node = node->next;
                 if (node->next != NULL) {
-                    printf("%" PRIu32 " , ", node->data);
+                    printf("%" PRIu32 ", ", node->data);
                     node = node->next;
                 } else {
                     printf("%" PRIu32 , node->data);
@@ -132,7 +136,7 @@ void printGolbachStrong(struct Node *node, int32_t *numberSums, int32_t number, 
             }
         }
     } else {
-        printf("%" PRId32 ": %" PRIu32 " summs", number, *numberSums);
+        printf("%" PRId32 ": %" PRIu32 " sums", number, *numberSums);
     }
     printf("\n");
 }
@@ -141,6 +145,8 @@ void golbach(int32_t number, struct Node *head, int32_t *numberSums) {
     int32_t numberCopy = abs(number);
     int typeGolbach = number%2;
     int32_t flag = isNegative(number);
+    // typeGolbach indicates wheter is strong conjecture(0) or
+    // weak conjecture(1)
     if (typeGolbach == 0) {
         // This cicle is for finding the sums of prime numbers
         // Is divided by 2 because beyond that it will repeat the sums in
@@ -155,33 +161,38 @@ void golbach(int32_t number, struct Node *head, int32_t *numberSums) {
         printGolbachStrong(head, numberSums, number, flag);
         freeList(head);
     } else {
-        int32_t  flagWeak, count = 0, *primes;
+        int32_t  flagWeak, count = 0;
         // Here a list of prime numbers before the number for golbach is created
-        primes = (int32_t *) malloc (sizeof(int32_t)*numberCopy/2);
-        for (int32_t i = 2; i < numberCopy; ++i) {
+        int32_t *primes = (int32_t *) malloc (sizeof(int32_t)*numberCopy/2);
+        if(primes == NULL) {
+		    printf("Memory allocation failed");
+            return;
+        } else {
+            for (int32_t i = 2; i < numberCopy; ++i) {
             flagWeak = isPrime(i);
-            if (flagWeak == 1) {
-                primes[count] = i;
-                count = count+1;
+                if (flagWeak == 1) {
+                    primes[count] = i;
+                    count = count+1;
+                }
             }
-        }
-        // Does 3 cicles to check if the sums of them are equal to the number
-        for (int32_t i = 0; i < count; i++) {
-            for (int32_t j = i; j < count; j++) {
-                for (int32_t k = j; k < count; k++) {
-                    if (primes[i] + primes[j] + primes[k] == numberCopy) {
-                        // Appends the primes to the list to be printed later
-                        append(&head, primes[i]);
-                        append(&head, primes[j]);
-                        append(&head, primes[k]);
-                        *numberSums+=1;
+            // Does 3 cicles to check if the sums of them are equal to the number
+            for (int32_t i = 0; i < count; i++) {
+                for (int32_t j = i; j < count; j++) {
+                    for (int32_t k = j; k < count; k++) {
+                        if (primes[i] + primes[j] + primes[k] == numberCopy) {
+                            // Appends the primes to the list to be printed later
+                            append(&head, primes[i]);
+                            append(&head, primes[j]);
+                            append(&head, primes[k]);
+                            *numberSums+=1;
+                        }
                     }
                 }
             }
+            printGolbachWeak(head, numberSums, number, flag);
+            freeList(head);
+            free(primes);
         }
-        printGolbachWeak(head, numberSums, number, flag);
-        freeList(head);
-        free(primes);
     }
 }
 
