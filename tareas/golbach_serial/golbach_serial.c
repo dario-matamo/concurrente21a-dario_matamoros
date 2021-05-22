@@ -26,12 +26,6 @@ void freeList(struct Node *node);
  * @brief Prints a simple linked list
  * @param n the node to start printing
  */
-void printList(struct Node* n);
-/**
- * @brief Makes sure a number is prime
- * @param number The number to be checked
- * @return 1 if is prime, 0 if it isnt
- */
 size_t isPrime(int64_t number);
 /**
  * @brief Does the golbach procedure for weak and strong conjectures
@@ -62,6 +56,12 @@ void printGolbachWeak(struct Node *node, size_t *numberSums, int64_t number, siz
  * @return 1 if the number is negative and 0 if not
  */
 size_t isNegative(int64_t number);
+
+void golbach_weak_conjecture(int64_t number, struct Node *node, size_t *numberSums
+,int64_t numberCopy,size_t flag);
+
+void golbach_strong_conjecture(int64_t number, struct Node *node, size_t *numberSums
+,int64_t numberCopy, size_t flag);
 
 int main() {
     struct Node* head = NULL;
@@ -137,27 +137,9 @@ void printGolbachStrong(struct Node *node, size_t *numberSums, int64_t number, s
     }
     printf("\n");
 }
-
-void golbach(int64_t number, struct Node *head, size_t *numberSums) {
-    int64_t numberCopy = labs(number);
-    size_t typeGolbach = number%2;
-    size_t flag = isNegative(number);
-    if (typeGolbach == 0) {
-        // This cicle is for finding the sums of prime numbers
-        // Is divided by 2 because beyond that it will repeat the sums in
-        // the opposite order
-        for (int64_t i=2; i <= numberCopy/2; i++) {
-            if (isPrime(i) == 1 && isPrime(numberCopy-i) == 1) {
-                append(&head, i);
-                append(&head, numberCopy-i);
-                *numberSums+=1;
-            }
-        }
-        printGolbachStrong(head, numberSums, number, flag);
-        freeList(head);
-    } else {
-		
-        size_t  flagWeak, count = 0;
+void golbach_weak_conjecture(int64_t number, struct Node *head, size_t *numberSums
+, int64_t numberCopy, size_t flag) {
+      size_t  flagWeak, count = 0;
         // Here a list of prime numbers before the number for golbach is created
         int64_t *primes = (int64_t *) malloc (sizeof(int64_t)*numberCopy/2);
         for (int64_t i = 2; i < numberCopy; i++) {
@@ -185,7 +167,33 @@ void golbach(int64_t number, struct Node *head, size_t *numberSums) {
         freeList(head);
         free(primes);
     }
+void golbach_strong_conjecture(int64_t number, struct Node *head, size_t *numberSums
+,int64_t numberCopy,size_t flag) {
+     // This cicle is for finding the sums of prime numbers
+     // Is divided by 2 because beyond that it will repeat the sums in
+     // the opposite order
+     for (int64_t i=2; i <= numberCopy/2; i++) {
+        if (isPrime(i) == 1 && isPrime(numberCopy-i) == 1) {
+           append(&head, i);
+           append(&head, numberCopy-i);
+           *numberSums+=1;
+        }
+     }
+     printGolbachStrong(head, numberSums, number, flag);
+     freeList(head);
 }
+void golbach(int64_t number, struct Node *head, size_t *numberSums) {
+    int64_t numberCopy = labs(number);
+    size_t typeGolbach = number%2;
+    size_t flag = isNegative(number);
+    if (typeGolbach == 0) {
+        golbach_strong_conjecture(number,head,numberSums,numberCopy,flag);
+    } else {
+		golbach_weak_conjecture(number,head,numberSums,numberCopy,flag);
+        
+    }
+}
+
 
 size_t isPrime(int64_t number) {
         if (number > 0) {
@@ -212,10 +220,4 @@ void append(struct Node** head_ref, int64_t new_data) {
     }
     last->next = new_node;
     return;
-}
-void printList(struct Node* n) {
-    while (n != NULL) {
-       printf("%" PRIu64 , n->data);
-       n = n->next;
-    }
 }
