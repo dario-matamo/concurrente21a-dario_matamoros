@@ -87,10 +87,11 @@ void freeList(struct Node* head) {
     }
 }
 size_t isNegative(int64_t number) {
+	size_t flag = 0;
     if (number < 0) {
         return 1;
     }
-    return 0;
+    return flag;
 }
 
 void printGolbachWeak(struct Node *node, size_t *numberSums, int64_t number, size_t flag) {
@@ -186,26 +187,36 @@ void golbach(int64_t number, struct Node *head, size_t *numberSums) {
     }
 }
 
-
 size_t isPrime(int64_t number) {
-    if (number <= 1) return 0; 
-    for (int64_t i=2; i<=sqrt(number); i++) {
-        if (number % i == 0) return 0;
+    size_t flag = 1;
+    if (number <= 1) {
+		flag = 0;
+    } else {
+        for (int64_t i=2; i<=sqrt(number); i++) {
+             if (number % i == 0) {
+			     flag = 0;
+             }
+        }
     }
-    return 1;
+    return flag;
 }
 void append(struct Node** head_ref, int64_t new_data) {
     struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
-    struct Node *last = *head_ref;
-    new_node->data  = new_data;
-    new_node->next = NULL;
-    if (*head_ref == NULL) {
-       *head_ref = new_node;
-       return;
+    if(new_node == NULL) {
+		    printf("Memory allocation failed");
+            return;
+    } else {
+            struct Node *last = *head_ref;
+            new_node->data  = new_data;
+            new_node->next = NULL;
+            if (*head_ref == NULL) {
+                 *head_ref = new_node;
+                 return;
+            }
+            while (last->next != NULL) {
+            last = last->next;
+            }
+            last->next = new_node;
     }
-    while (last->next != NULL) {
-        last = last->next;
-    }
-    last->next = new_node;
     return;
 }
