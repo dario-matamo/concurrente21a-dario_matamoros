@@ -139,33 +139,25 @@ void printGolbachStrong(struct Node *node, size_t *numberSums, int64_t number, s
 }
 void golbach_weak_conjecture(int64_t number, struct Node *head, size_t *numberSums
 , int64_t numberCopy, size_t flag) {
-      size_t  flagWeak, count = 0;
-        // Here a list of prime numbers before the number for golbach is created
-        int64_t *primes = (int64_t *) malloc (sizeof(int64_t)*numberCopy/2);
-        for (int64_t i = 2; i < numberCopy; i++) {
-            flagWeak = isPrime(i);
-            if (flagWeak == 1) {
-                primes[count] = i;
-                count = count+1;
-            }
-        }
         // Does 3 cicles to check if the sums of them are equal to the number
-        for (size_t i = 0; i < count; i++) {
-            for (size_t j = i; j < count; j++) {
-                for (size_t k = j; k < count; k++) {
-                    if (primes[i] + primes[j] + primes[k] == numberCopy) {
+        for (int64_t i = 0; i < numberCopy; i++) {
+            for (int64_t j = i; j < numberCopy; j++) {
+                for (int64_t k = j; k < numberCopy; k++) {
+                    if (i + j + k == numberCopy ) {
                         // Appends the primes to the list to be printed later
-                        append(&head, primes[i]);
-                        append(&head, primes[j]);
-                        append(&head, primes[k]);
+                        if(isPrime(i)==1 && isPrime(j)==1 &&
+                        isPrime(k)==1){
+                        append(&head, i);
+                        append(&head, j);
+                        append(&head, k);
                         *numberSums+=1;
                     }
                 }
             }
         }
+       }
         printGolbachWeak(head, numberSums, number, flag);
         freeList(head);
-        free(primes);
     }
 void golbach_strong_conjecture(int64_t number, struct Node *head, size_t *numberSums
 ,int64_t numberCopy,size_t flag) {
@@ -196,13 +188,9 @@ void golbach(int64_t number, struct Node *head, size_t *numberSums) {
 
 
 size_t isPrime(int64_t number) {
-        if (number > 0) {
-        int64_t sqrRootNumber = sqrt(number);
-        for (int64_t i=2; i <= sqrRootNumber; i++) {
-            if (number % i == 0) {
-                return 0;
-            }
-        }
+    if (number <= 1) return 0; 
+    for (int64_t i=2; i<=sqrt(number); i++) {
+        if (number % i == 0) return 0;
     }
     return 1;
 }
