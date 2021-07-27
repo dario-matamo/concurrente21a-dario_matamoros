@@ -3,13 +3,18 @@
 #include "Queue.hpp"
 #include <vector>
 #include <cmath>
-#include <iostream>
+#include "GoldbachController.hpp"
+using namespace std;
 class GoldbachCalculator{
     private:
         int64_t goldbach_number;
         std::vector<int64_t>* queue_solutions;
     protected:
     public:
+    /**
+    * @brief: Goldbach calculator destructor
+    */
+    ~GoldbachCalculator();
     /**
     * @brief: Goldbach calculator constructor
     * @param: number to which the sums are to be calculated
@@ -20,7 +25,6 @@ class GoldbachCalculator{
     /**
     * @brief: Goldbach calculator destructor
     */
-    ~GoldbachCalculator();
     /**
     * @brief: calls methods to find goldbach sums depending if it is even or odd
     * @param: number to which the sums are to be calculated
@@ -57,7 +61,13 @@ class GoldbachCalculator{
     int getCantitySums();
 
     int64_t getGoldbachNumber();
+
     void setGoldbachNumber(int64_t number);
 
+    void printGolbachSums();
+
+    void printStrongConjecture();
+
+    void printWeakConjecture();
 };
 #endif

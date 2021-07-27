@@ -10,9 +10,7 @@ GoldbachCalculator::GoldbachCalculator(){
 }
 
 GoldbachCalculator::~GoldbachCalculator(){
-    //delete this->goldbach_number;
     delete this->queue_solutions;
-    
 }
 std::vector<int64_t>* GoldbachCalculator::getQueue(){
     return this->queue_solutions;    
@@ -77,4 +75,57 @@ int64_t GoldbachCalculator::getGoldbachNumber(){
 }
 void GoldbachCalculator::setGoldbachNumber(int64_t number){
     this->goldbach_number=number;
+}
+void GoldbachCalculator::printGolbachSums() {
+    if(this->goldbach_number % 2 == 0){
+        printStrongConjecture();
+    }else{
+        printWeakConjecture();
+    }
+}
+void GoldbachCalculator::printStrongConjecture(){
+    std::vector<int64_t> *solutions = this->getQueue();
+    if (this->goldbach_number < 0) {
+    // If the number is negative prints all the sums
+    cout <<this->goldbach_number<<":"<<
+    solutions->size()/2<<" sums: ";
+    size_t weakConjectureAux = 0;
+        for (auto ir = solutions->crbegin();
+        ir != solutions->crend(); ++ir){
+            if(weakConjectureAux%2 == 0){
+                cout<<std::to_string(*ir) <<" + ";
+            }else{
+                cout<<std::to_string(*ir) <<" , ";
+            }
+            weakConjectureAux++;
+        }
+    } else {
+        // If it isnt negative prints just the number of sums
+        cout <<this->goldbach_number<<":"<<
+        this->getCantitySums()<<" sums ";
+    }
+    cout<<endl;
+}
+void GoldbachCalculator::printWeakConjecture() {
+    std::vector<int64_t> *solutions = this->getQueue();
+    if (this->goldbach_number < 0) {
+        cout <<this->goldbach_number<<":"<<
+        solutions->size()/3<<" sums: ";
+        size_t strongConjectureAux = 0;
+        for (auto i = solutions->crbegin(); 
+        i != solutions->crend(); ++i) {
+            if(strongConjectureAux%2 == 0){
+                cout<<std::to_string(*i) <<" + ";       
+                ++i;
+                cout<<std::to_string(*i) <<" + ";
+            } else {
+                cout<<std::to_string(*i) <<" , ";
+            }
+            strongConjectureAux++;
+        }
+    } else {
+        cout <<this->goldbach_number<<":"<<
+        this->getCantitySums()<<" sums ";
+    }
+    cout << endl;
 }
