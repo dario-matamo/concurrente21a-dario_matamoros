@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
   }
   auto end = chrono::steady_clock::now();
   cout << "Elapsed time in seconds: "
-        << chrono::duration_cast<chrono::seconds>(end - start).count()
-        << " sec";
+  << chrono::duration_cast<chrono::seconds>(end - start).count()
+  << " sec";
   return 0;
 }

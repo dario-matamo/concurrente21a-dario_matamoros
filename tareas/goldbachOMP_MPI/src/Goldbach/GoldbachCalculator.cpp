@@ -77,10 +77,14 @@ void GoldbachCalculator::setGoldbachNumber(int64_t number){
     this->goldbach_number=number;
 }
 void GoldbachCalculator::printGolbachSums() {
-    if(this->goldbach_number % 2 == 0){
-        printStrongConjecture();
+    if(this->goldbach_number <=5 && this->goldbach_number >= -5){
+        cout <<this->goldbach_number<<":NA"<<endl;
     }else{
-        printWeakConjecture();
+        if(this->goldbach_number % 2 == 0){
+            printStrongConjecture();
+        }else{
+            printWeakConjecture();
+        }
     }
 }
 void GoldbachCalculator::printStrongConjecture(){

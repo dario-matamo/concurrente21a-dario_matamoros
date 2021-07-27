@@ -59,7 +59,7 @@ class GoldbachCalculator{
     * @return: Returns an int number, total sums of a number
     */ 
     int getCantitySums();
-
+    
     int64_t getGoldbachNumber();
 
     void setGoldbachNumber(int64_t number);
